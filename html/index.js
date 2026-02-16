@@ -1,3 +1,5 @@
+const webSocketConnect = document.getElementById('webSocketConnect');
+const webSocketDisconnect = document.getElementById('webSocketDisconnect');
 const startRecord = document.getElementById('startRecord');
 const stopRecord = document.getElementById('stopRecord');
 const recordedAudio = document.getElementById('recordedAudio');
@@ -6,6 +8,10 @@ const audioSource = document.getElementById('audioSource');
 
 const audioInputSelect = document.querySelector('select#audioSource');
 const selectors = [audioInputSelect];
+document.getElementById('websocketUrl').value = 'ws://localhost:4000/ws'
+var websocket = null;
+var pingInterval = null;
+var counter = 0;
 
 function gotDevices(deviceInfos) {
     // Handles being called several times to update labels. Preserve values.
@@ -37,6 +43,9 @@ function gotStream(stream) {
     rec = new MediaRecorder(stream);
     rec.ondataavailable = e => {
         audioChunks.push(e.data);
+        if(websocket.connected){
+            websocket.send(e.data);
+        }/*
         if (rec.state == "inactive"){
             let blob = new Blob(audioChunks,{type:'audio/x-mpeg-3'});
             recordedAudio.src = URL.createObjectURL(blob);
@@ -45,7 +54,7 @@ function gotStream(stream) {
             audioDownload.href = recordedAudio.src;
             audioDownload.download = 'mp3';
             audioDownload.innerHTML = 'download';
-        }
+        }*/
     }
 }
 
@@ -72,14 +81,41 @@ audioInputSelect.onchange = start;
 
 startRecord.onclick = e => {
     startRecord.disabled = true;
-    stopRecord.disabled=false;
+    stopRecord.disabled = false;
     audioChunks = [];
     rec.start();
 }
 stopRecord.onclick = e => {
     startRecord.disabled = false;
-    stopRecord.disabled=true;
+    stopRecord.disabled = true;
     rec.stop();
+}
+
+webSocketConnect.onclick = e => {
+    webSocketConnect.disabled = true;
+    webSocketDisconnect.disabled = false;
+    // connect to websocket
+    websocket = new WebSocket(document.getElementById('websocketUrl').value);
+    websocket.addEventListener("open", () => {
+        console.log("CONNECTED");
+        pingInterval = setInterval(() => {
+            console.log(`SENT: ping: ${counter}`);
+            websocket.send("ping");
+        }, 1000);
+    });
+}
+webSocketDisconnect.onclick = e => {
+    webSocketConnect.disabled = false;
+    webSocketDisconnect.disabled = true;
+    if (websocket) {
+        console.log("CLOSING");
+        websocket.close();
+        websocket = null;
+        if(pingInterval){
+            window.clearInterval(pingInterval);
+        }
+    }
+    // TODO disconnect to websocket server
 }
 
 navigator.mediaDevices.enumerateDevices()
