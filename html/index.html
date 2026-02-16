@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <title>whisper web frontend</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="bootstrap/bootstrap.min.css" type="text/css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <header  class="col-md-12">
+          <h1 class="d-none d-sm-block">whisper web frontend</h1>
+          <p class="d-none d-sm-block">record audio and transcribe</p>
+        </header>
+      </div>
+      <div class="row">
+        <nav class="col-sm-7 col-md-8">
+          <ul class= "nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Home</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <article>
+        <h2>Audio record and playback</h2>
+        <p>
+          <label for="audioSource">Audio input source: </label>
+          <select id="audioSource" class="form-control form-control-sm"></select>
+        </p>
+        <p>
+          <button id=startRecord class="btn btn-sm btn-primary">start</button>
+          <button id=stopRecord class="btn btn-sm btn-primary" disabled>stop</button>
+        </p>
+        <p>
+          <audio id=recordedAudio></audio>
+          <a id=audioDownload></a>
+        </p>
+      </article>
+      <div class="row">
+      </div>
+      <hr>
+      <div class="row">
+        <footer class= " col-md-12 text-center " >
+          <p> &copy; MajorX234</p>
+        </footer>
+      </div>
+    </div>
+    <script src="index.js"></script>
+    <script type="text/javascript" src="bootstrap/jquery-3.7.1.slim.min.js"></script>
+    <script type="text/javascript" src="bootstrap/popper-1.16.1.min.js"></script>
+    <script type="text/javascript" src="bootstrap/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="bootstrap/bootstrap.min.js"></script>
+  </body>
+</html>
