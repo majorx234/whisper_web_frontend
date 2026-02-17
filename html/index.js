@@ -43,7 +43,7 @@ function gotStream(stream) {
     rec = new MediaRecorder(stream);
     rec.ondataavailable = e => {
         audioChunks.push(e.data);
-        if(websocket.connected){
+        if(websocket.readyState){
             websocket.send(e.data);
         }/*
         if (rec.state == "inactive"){
@@ -83,8 +83,9 @@ startRecord.onclick = e => {
     startRecord.disabled = true;
     stopRecord.disabled = false;
     audioChunks = [];
-    rec.start();
+    rec.start(200);
 }
+
 stopRecord.onclick = e => {
     startRecord.disabled = false;
     stopRecord.disabled = true;
